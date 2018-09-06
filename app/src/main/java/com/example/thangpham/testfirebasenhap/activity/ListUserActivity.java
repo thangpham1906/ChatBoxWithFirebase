@@ -1,5 +1,6 @@
-package com.example.thangpham.testfirebasenhap.chat;
+package com.example.thangpham.testfirebasenhap.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.util.Log;
 import com.example.thangpham.testfirebasenhap.R;
+import com.example.thangpham.testfirebasenhap.chat.ListChatAdapter;
+import com.example.thangpham.testfirebasenhap.model.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,6 +23,7 @@ public class ListUserActivity extends AppCompatActivity {
   RecyclerView rvList;
   FirebaseDatabase firebaseDatabase;
   DatabaseReference databaseReference;
+  String userId;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -38,7 +42,12 @@ public class ListUserActivity extends AppCompatActivity {
           list.add(userModel1);
 
         }
-
+        for(int i=0;i<list.size();i++){
+          if(list.get(i).userId.equals(userModel.userId)){
+            list.remove(i);
+            break;
+          }
+        }
         ListChatAdapter listChatAdapter = new ListChatAdapter(ListUserActivity.this,list,userModel);
         rvList.setLayoutManager(new LinearLayoutManager(ListUserActivity.this));
         rvList.setAdapter(listChatAdapter);

@@ -1,8 +1,7 @@
-package com.example.thangpham.testfirebasenhap.chat;
+package com.example.thangpham.testfirebasenhap.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +13,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.example.thangpham.testfirebasenhap.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.thangpham.testfirebasenhap.adapter.ChatAdapter;
+import com.example.thangpham.testfirebasenhap.model.ChatMessage;
+import com.example.thangpham.testfirebasenhap.model.UserModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,10 +31,10 @@ public class ChatActivity extends AppCompatActivity {
   RecyclerView rvListChat;
   EditText etText;
   Button btnSend;
-  UserModel userFrom;
+  com.example.thangpham.testfirebasenhap.model.UserModel userFrom;
   UserModel userTo;
   ChatAdapter chatAdapter;
-  List<ChatMessage> list;
+  List<com.example.thangpham.testfirebasenhap.model.ChatMessage> list;
   boolean isFistTime;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -55,30 +55,33 @@ public class ChatActivity extends AppCompatActivity {
   }
 
   private void loadData() {
-    databaseReference.child("123").addValueEventListener(new ValueEventListener() {
+    databaseReference.child(userFrom.getUserId()).child(userTo.getUserId()).addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
         // lần đầu tiên
-        if(isFistTime){
-          for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-            ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
-            list.add(chatMessage);
-          }
-          isFistTime=false;
-          chatAdapter = new ChatAdapter(ChatActivity.this,list);
-          rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
-          rvListChat.setAdapter(chatAdapter);
-
-        }else{   // chỉ append
-          ChatMessage chatMessage=null;
-          for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-            chatMessage = dataSnapshot1.getValue(ChatMessage.class);
-          }
+//        if(isFistTime){
+//          for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+//            ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
+//            list.add(chatMessage);
+//          }
+//          isFistTime=false;
+//          chatAdapter = new ChatAdapter(ChatActivity.this,list);
+//          rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+//          rvListChat.setAdapter(chatAdapter);
+//
+//        }else{   // chỉ append
+//          ChatMessage chatMessage=null;
+//          for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+//            chatMessage = dataSnapshot1.getValue(ChatMessage.class);
+//          }
+//          list.add(chatMessage);
+//          chatAdapter.notifyDataSetChanged();
+//        }
+        for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+          ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
+          chatMessage.isOwn=true;
           list.add(chatMessage);
-          chatAdapter.notifyDataSetChanged();
         }
-
-
       }
 
       @Override
@@ -86,6 +89,26 @@ public class ChatActivity extends AppCompatActivity {
 
       }
     });
+    databaseReference.child(userTo.getUserId()).child(userFrom.userId).addValueEventListener(
+        new ValueEventListener() {
+          @Override
+          public void onDataChange(DataSnapshot dataSnapshot) {
+            for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+              ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
+              chatMessage.isOwn=false;
+              list.add(chatMessage);
+            }
+          }
+
+          @Override
+          public void onCancelled(DatabaseError databaseError) {
+
+          }
+        });
+    isFistTime=false;
+    chatAdapter = new ChatAdapter(ChatActivity.this,list);
+    rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+    rvListChat.setAdapter(chatAdapter);
   }
 
   private void addListener() {
@@ -107,7 +130,7 @@ public class ChatActivity extends AppCompatActivity {
   private void sendContent(String content) {
     long time = System.currentTimeMillis();
     final ChatMessage chatMessage = new ChatMessage(content,time);
-    databaseReference.child("123").child(String.valueOf(time)).setValue(chatMessage);
+    databaseReference.child(userFrom.getUserId()).child(userTo.getUserId()).child(String.valueOf(time)).setValue(chatMessage);
     chatAdapter.notifyDataSetChanged();
   }
 

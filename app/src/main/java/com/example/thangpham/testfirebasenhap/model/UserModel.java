@@ -1,4 +1,4 @@
-package com.example.thangpham.testfirebasenhap.chat;
+package com.example.thangpham.testfirebasenhap.model;
 
 import java.io.Serializable;
 

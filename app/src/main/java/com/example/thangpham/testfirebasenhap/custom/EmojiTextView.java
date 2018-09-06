@@ -1,4 +1,4 @@
-package com.example.thangpham.testfirebasenhap.chat;
+package com.example.thangpham.testfirebasenhap.custom;
 
 import android.content.Context;
 import android.graphics.Color;

@@ -18,7 +18,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.thangpham.testfirebasenhap.R;
+import com.example.thangpham.testfirebasenhap.activity.ChatActivity;
+import com.example.thangpham.testfirebasenhap.activity.MainActivity;
 import com.example.thangpham.testfirebasenhap.chat.ListChatAdapter.ListUserHolder;
+import com.example.thangpham.testfirebasenhap.model.UserModel;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import java.util.List;
@@ -73,7 +76,7 @@ public class ListChatAdapter extends Adapter<ListUserHolder> {
         @Override
         public void onClick(View view) {
           Intent intent = new Intent(context,ChatActivity.class);
-          intent.putExtra(MainActivity.USER_FROM,userModel);
+          intent.putExtra(com.example.thangpham.testfirebasenhap.activity.MainActivity.USER_FROM,userModel);
           intent.putExtra(MainActivity.USER_TO,data);
           context.startActivity(intent);
         }

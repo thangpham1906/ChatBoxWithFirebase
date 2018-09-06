@@ -1,4 +1,4 @@
-package com.example.thangpham.testfirebasenhap;
+package com.example.thangpham.testfirebasenhap.custom;
 
 import android.graphics.drawable.RippleDrawable;
 import android.support.annotation.NonNull;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.thangpham.testfirebasenhap.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -35,7 +36,7 @@ public class DatabaseActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_database);
+        setContentView(com.example.thangpham.testfirebasenhap.R.layout.activity_database);
         setupUI();
         FirebaseMessaging firebaseMessaging = FirebaseMessaging.getInstance();
         firebaseMessaging.subscribeToTopic("qk");
