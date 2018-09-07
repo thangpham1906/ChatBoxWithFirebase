@@ -61,32 +61,15 @@ public class ChatActivity extends AppCompatActivity {
     databaseReference.child(userFrom.getUserId()).child(userTo.getUserId()).addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
-
+        Log.e("ThangPham","1234");
         for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
           ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
           chatMessage.isOwn=true;
           list.add(chatMessage);
+          chatAdapter = new ChatAdapter2(ChatActivity.this,list);
+          lvList.setAdapter(chatAdapter);
         }
-        databaseReference.child(userTo.getUserId()).child(userFrom.userId).addValueEventListener(
-            new ValueEventListener() {
-              @Override
-              public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                  ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
-                  chatMessage.isOwn=false;
-                  list.add(chatMessage);
-                  chatAdapter = new ChatAdapter2(ChatActivity.this,list);
-                  //rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
-//        lvList.setAdapter((ListAdapter) chatAdapter);
-                  lvList.setAdapter(chatAdapter);
-                }
-              }
 
-              @Override
-              public void onCancelled(DatabaseError databaseError) {
-
-              }
-            });
 
       }
 
@@ -95,7 +78,26 @@ public class ChatActivity extends AppCompatActivity {
 
       }
     });
-
+//    databaseReference.child(userTo.getUserId()).child(userFrom.userId).addValueEventListener(
+//        new ValueEventListener() {
+//          @Override
+//          public void onDataChange(DataSnapshot dataSnapshot) {
+//            for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+//              ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
+//              chatMessage.isOwn=false;
+//              list.add(chatMessage);
+//              chatAdapter = new ChatAdapter2(ChatActivity.this,list);
+//              //rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+////        lvList.setAdapter((ListAdapter) chatAdapter);
+//              lvList.setAdapter(chatAdapter);
+//            }
+//          }
+//
+//          @Override
+//          public void onCancelled(DatabaseError databaseError) {
+//
+//          }
+//        });
   }
 
   private void addListener() {
