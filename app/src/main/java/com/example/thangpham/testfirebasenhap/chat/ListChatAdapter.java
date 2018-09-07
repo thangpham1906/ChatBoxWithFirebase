@@ -52,7 +52,6 @@ public class ListChatAdapter extends Adapter<ListUserHolder> {
 
   @Override
   public int getItemCount() {
-    Log.e("ThangPham","size: "+ listUsers.size());
     return listUsers.size();
   }
 

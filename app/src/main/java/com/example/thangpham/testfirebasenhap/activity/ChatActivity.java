@@ -10,10 +10,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.example.thangpham.testfirebasenhap.R;
 import com.example.thangpham.testfirebasenhap.adapter.ChatAdapter;
+import com.example.thangpham.testfirebasenhap.adapter.ChatAdapter2;
 import com.example.thangpham.testfirebasenhap.model.ChatMessage;
 import com.example.thangpham.testfirebasenhap.model.UserModel;
 import com.google.firebase.database.DataSnapshot;
@@ -28,12 +30,13 @@ public class ChatActivity extends AppCompatActivity {
 
   FirebaseDatabase firebaseDatabase;
   DatabaseReference databaseReference;
-  RecyclerView rvListChat;
+//  RecyclerView rvListChat;
+  ListView lvList;
   EditText etText;
   Button btnSend;
   com.example.thangpham.testfirebasenhap.model.UserModel userFrom;
   UserModel userTo;
-  ChatAdapter chatAdapter;
+  ChatAdapter2 chatAdapter;
   List<com.example.thangpham.testfirebasenhap.model.ChatMessage> list;
   boolean isFistTime;
   @Override
@@ -58,30 +61,33 @@ public class ChatActivity extends AppCompatActivity {
     databaseReference.child(userFrom.getUserId()).child(userTo.getUserId()).addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot dataSnapshot) {
-        // lần đầu tiên
-//        if(isFistTime){
-//          for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-//            ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
-//            list.add(chatMessage);
-//          }
-//          isFistTime=false;
-//          chatAdapter = new ChatAdapter(ChatActivity.this,list);
-//          rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
-//          rvListChat.setAdapter(chatAdapter);
-//
-//        }else{   // chỉ append
-//          ChatMessage chatMessage=null;
-//          for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-//            chatMessage = dataSnapshot1.getValue(ChatMessage.class);
-//          }
-//          list.add(chatMessage);
-//          chatAdapter.notifyDataSetChanged();
-//        }
+
         for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
           ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
           chatMessage.isOwn=true;
           list.add(chatMessage);
         }
+        databaseReference.child(userTo.getUserId()).child(userFrom.userId).addValueEventListener(
+            new ValueEventListener() {
+              @Override
+              public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                  ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
+                  chatMessage.isOwn=false;
+                  list.add(chatMessage);
+                  chatAdapter = new ChatAdapter2(ChatActivity.this,list);
+                  //rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+//        lvList.setAdapter((ListAdapter) chatAdapter);
+                  lvList.setAdapter(chatAdapter);
+                }
+              }
+
+              @Override
+              public void onCancelled(DatabaseError databaseError) {
+
+              }
+            });
+
       }
 
       @Override
@@ -89,26 +95,7 @@ public class ChatActivity extends AppCompatActivity {
 
       }
     });
-    databaseReference.child(userTo.getUserId()).child(userFrom.userId).addValueEventListener(
-        new ValueEventListener() {
-          @Override
-          public void onDataChange(DataSnapshot dataSnapshot) {
-            for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-              ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
-              chatMessage.isOwn=false;
-              list.add(chatMessage);
-            }
-          }
 
-          @Override
-          public void onCancelled(DatabaseError databaseError) {
-
-          }
-        });
-    isFistTime=false;
-    chatAdapter = new ChatAdapter(ChatActivity.this,list);
-    rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
-    rvListChat.setAdapter(chatAdapter);
   }
 
   private void addListener() {
@@ -138,8 +125,30 @@ public class ChatActivity extends AppCompatActivity {
     list = new ArrayList<>();
     firebaseDatabase = FirebaseDatabase.getInstance();
     databaseReference = firebaseDatabase.getReference().child("chat");
-    rvListChat = findViewById(R.id.rv_list_chat);
+//    rvListChat = findViewById(R.id.rv_list_chat);
+    lvList = findViewById(R.id.rv_list_chat);
     btnSend = findViewById(R.id.btnSend);
     etText = findViewById(R.id.et_text);
+  }
+  public void nhap(){
+    // lần đầu tiên
+//        if(isFistTime){
+//          for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+//            ChatMessage chatMessage = dataSnapshot1.getValue(ChatMessage.class);
+//            list.add(chatMessage);
+//          }
+//          isFistTime=false;
+//          chatAdapter = new ChatAdapter(ChatActivity.this,list);
+//          rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+//          rvListChat.setAdapter(chatAdapter);
+//
+//        }else{   // chỉ append
+//          ChatMessage chatMessage=null;
+//          for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+//            chatMessage = dataSnapshot1.getValue(ChatMessage.class);
+//          }
+//          list.add(chatMessage);
+//          chatAdapter.notifyDataSetChanged();
+//        }
   }
 }
