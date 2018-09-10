@@ -1,6 +1,6 @@
 package com.example.thangpham.testfirebasenhap.model;
 
-public class ChatMessage {
+public class ChatMessage{
   public String content;
   public long time;
   public boolean isOwn;

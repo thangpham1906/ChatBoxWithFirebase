@@ -43,10 +43,9 @@ public class ChatAdapter2 extends BaseAdapter {
     MyViewHolder mViewHolder;
     if(view == null) {
      if(listChatMessage.get(i).isOwn){
-       view = LayoutInflater.from(context).inflate(R.layout.item_list_chat_receiver_mess, null);
-     }else
-     {
-       view = LayoutInflater.from(context).inflate(R.layout.item_list_chat_receiver_mess, null);
+       view = LayoutInflater.from(context).inflate(R.layout.item_list_chat_send_message, viewGroup,false);
+     }else  {
+       view = LayoutInflater.from(context).inflate(R.layout.item_list_chat_receiver_mess, viewGroup,false);
      }
       mViewHolder = new MyViewHolder();
       mViewHolder.emojiTextView = view.findViewById(R.id.message);
@@ -54,10 +53,8 @@ public class ChatAdapter2 extends BaseAdapter {
     } else {
       mViewHolder = (MyViewHolder) view.getTag();
     }
-    Log.e("ThangPham","content: "+listChatMessage.get(i).isOwn);
+    Log.e("ThangPham1","content: "+listChatMessage.get(i).isOwn);
     mViewHolder.emojiTextView.setEmojiText(listChatMessage.get(i).content);
-
-
     return view;
   }
   public class MyViewHolder{
