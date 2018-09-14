@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ChatBox.iml" filepath="$PROJECT_DIR$/ChatBox.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ChatBoxWithFirebase.iml" filepath="$PROJECT_DIR$/ChatBoxWithFirebase.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

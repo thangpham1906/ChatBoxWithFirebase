@@ -40,6 +40,7 @@ public class ChatAdapter2 extends BaseAdapter {
 
   @Override
   public View getView(int i, View view, ViewGroup viewGroup) {
+
     MyViewHolder mViewHolder;
     if(view == null) {
      if(listChatMessage.get(i).isOwn){

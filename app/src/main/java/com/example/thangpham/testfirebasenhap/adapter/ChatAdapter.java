@@ -26,11 +26,27 @@ public class ChatAdapter extends Adapter<ChatAdapter.ViewHolder> {
     this.listChatMessage = listChatMessage;
   }
 
+
+  @Override
+  public int getItemViewType(int position) {
+    if (listChatMessage.get(position).isOwn)
+      return 0;
+    else
+      return 1;
+    }
+
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    int resId=0;
+    if(viewType==0){
+       resId = R.layout.item_list_chat_send_message;
+    }else{
+       resId = R.layout.item_list_chat_receiver_mess;
+    }
 
-    int resId = R.layout.item_list_chat_receiver_mess;
     View convertView = LayoutInflater.from(context).inflate(resId, null, false);
+
+
     return new ViewHolder(convertView);
   }
 

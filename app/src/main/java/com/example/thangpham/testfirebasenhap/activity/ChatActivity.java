@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,13 +38,13 @@ public class ChatActivity extends AppCompatActivity {
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    //  RecyclerView rvListChat;
-    ListView lvList;
+      RecyclerView rvListChat;
+//    ListView lvList;
     EditText etText;
     Button btnSend;
     com.example.thangpham.testfirebasenhap.model.UserModel userFrom;
     UserModel userTo;
-    ChatAdapter2 chatAdapter;
+    ChatAdapter chatAdapter;
     List<com.example.thangpham.testfirebasenhap.model.ChatMessage> list;
     boolean isFistTime;
 
@@ -65,7 +67,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        databaseReference.child(userFrom.getUserId()).child(userTo.getUserId()).addValueEventListener(new ValueEventListener() {
+        databaseReference.child("chat").child(userFrom.getUserId()).child(userTo.getUserId()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 list.clear();
@@ -74,11 +76,10 @@ public class ChatActivity extends AppCompatActivity {
                     list.add(chatMessage);
                 }
                 Collections.sort(list,new MessageComparator());
-                chatAdapter = new ChatAdapter2(ChatActivity.this, list);
-                //rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
-                lvList.setAdapter(chatAdapter);
-                lvList.setSelection(list.size() - 1);
-
+                chatAdapter = new ChatAdapter(ChatActivity.this, list);
+                rvListChat.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+                rvListChat.setAdapter(chatAdapter);
+                rvListChat.smoothScrollToPosition(list.size()-1 );
 
 //                databaseReference.child(userTo.getUserId()).child(userFrom.userId).addValueEventListener(
 //                        new ValueEventListener() {
@@ -125,6 +126,47 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+        etText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                databaseReference.child("typing").child(userFrom.userId).child(userTo.userId).child("chatting").setValue("chatting1");
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.toString().equals("")){
+                    databaseReference.child("typing").child(userFrom.userId).child(userTo.userId).child("chatting").removeValue();
+                }
+
+            }
+        });
+        Log.e("ThangPham","aaaa: ");
+        databaseReference.child("63uVTBdQlXg1ZfZH61d2zK2z2842").child("VayN0RR4AWPTI4tdQtuQqPncgN12").child("chatting").addValueEventListener(
+            new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.e("ThangPham","a: "+dataSnapshot.getChildrenCount());
+//                    for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
+//                        Log.e("ThangPham","aaa: "+dataSnapshot1.getValue().toString());
+//                        Log.e("ThangPham","aaa: "+dataSnapshot1.getValue().toString());
+//                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        if(databaseReference.child(userTo.userId).child(userFrom.userId).child("chatting").child("chatting1").getKey().equals("chatting1")){
+//            Toast.makeText(this, userTo.getName()+" is typing", Toast.LENGTH_SHORT).show();
+            Log.e("ThangPham", userTo.getName()+" is typing");
+        }
+
     }
 
     private void sendContent(String content) {
@@ -133,8 +175,8 @@ public class ChatActivity extends AppCompatActivity {
         myMessage.setOwn(true);
         final ChatMessage yourMessage = new ChatMessage(content, time);
         yourMessage.setOwn(false);
-        databaseReference.child(userFrom.getUserId()).child(userTo.getUserId()).child(String.valueOf(time)).setValue(myMessage);
-        databaseReference.child(userTo.getUserId()).child(userFrom.getUserId()).child(String.valueOf(time)).setValue(yourMessage);
+        databaseReference.child("chat").child(userFrom.getUserId()).child(userTo.getUserId()).child(String.valueOf(time)).setValue(myMessage);
+        databaseReference.child("chat").child(userTo.getUserId()).child(userFrom.getUserId()).child(String.valueOf(time)).setValue(yourMessage);
 //    Map<String,Object> map = new HashMap<String, Object>();
 //    map.put(String.valueOf(time),chatMessage);
         //  databaseReference.child(userFrom.getUserId()).child(userTo.getUserId()).updateChildren(map);
@@ -144,9 +186,9 @@ public class ChatActivity extends AppCompatActivity {
     private void setupUI() {
         list = new ArrayList<>();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference().child("chat");
-//    rvListChat = findViewById(R.id.rv_list_chat);
-        lvList = findViewById(R.id.rv_list_chat);
+        databaseReference = firebaseDatabase.getReference();
+    rvListChat = findViewById(R.id.rv_list_chat);
+//        lvList = findViewById(R.id.rv_list_chat);
         btnSend = findViewById(R.id.btnSend);
         etText = findViewById(R.id.et_text);
     }
