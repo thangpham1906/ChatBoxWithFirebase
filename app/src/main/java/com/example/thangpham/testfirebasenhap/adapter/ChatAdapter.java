@@ -85,6 +85,6 @@ public class ChatAdapter extends Adapter<ChatAdapter.ViewHolder> {
 
   public void addNewMessage(ChatMessage newChatMessage) {
     listChatMessage.add(newChatMessage);
-
+    notifyDataSetChanged();
   }
 }
